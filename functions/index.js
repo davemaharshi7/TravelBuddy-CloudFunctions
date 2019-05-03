@@ -30,6 +30,20 @@ exports.sendEmailToUser = functions.https.onCall((data,context)=>{
   
     return sendEmail(email,name,persons,contact);
 });
+exports.sendEmailToGuide = functions.https.onCall((data,context)=>{
+  // const original = request.query.text;
+  const email = data.emailUser; // The email of the user.
+  const name = data.username;
+  const nameGuide = data.guidename;
+  const persons = data.persons;
+  const contact = data.contact;
+  console.log("EMAIL GUIDE:"+email);
+  //const displayName = ''; // The display name of the user.
+  // [END eventAttributes]
+
+  return sendEmailG(email,name,nameGuide,persons,contact);
+});
+
 exports.sendWelcomeEmail = functions.auth.user().onCreate((user) => {
     // [END onCreateTrigger]
       // [START eventAttributes]
@@ -63,7 +77,9 @@ function sendWelcomeEmail(email, displayName) {
   
     // The user subscribed to the newsletter.
     mailOptions.subject = `Welcome to ${APP_NAME}!`;
-    mailOptions.text = `Hey ${displayName || ''}! Welcome to ${APP_NAME}. I hope you will enjoy our service.`;
+    mailOptions.text = `Hey ${displayName || ''}! Welcome to ${APP_NAME}. I hope you will enjoy our service.
+    
+    Team TravelBuddy.`;
     return mailTransport.sendMail(mailOptions).then(() => {
       return console.log('New welcome email sent to:', email);
     });
@@ -85,12 +101,36 @@ function sendEmail(email,name,persons,contact) {
      Welcome to ${APP_NAME}. I hope you will enjoy our service.
      Your trip is confirmed and some of your details are as below-
      Number of persons Travelling are ${persons}
-     Your Contact Number is ${contact}`;
+     Your Contact Number is ${contact}
+     
+     Team TravelBuddy`;
     return mailTransport.sendMail(mailOptions).then(() => {
       return console.log('New Email email sent to:', email);
     });
   }  
 
+
+  function sendEmailG(email,name,nameGuide,persons,contact) {
+    const mailOptions = {
+      from: `${APP_NAME} <noreply@travelbuddy.com>`,
+      to: email,
+    };
+  
+    // The user subscribed to the newsletter.
+    mailOptions.subject = `You are Hired, ${APP_NAME}!`;
+    mailOptions.text = `Hey ${nameGuide}!
+    
+     ${name} has confirmed trip with you.
+     Your trip is confirmed and some of your details are as below-
+     Number of persons Travelling are ${persons}
+     Clients Contact Number is ${contact}
+     For any further updates you can freely call the client directly.
+
+     Team TravelBuddy`;
+    return mailTransport.sendMail(mailOptions).then(() => {
+      return console.log('New Email email sent to:', email);
+    });
+  }  
 
 
 
@@ -104,7 +144,9 @@ function sendEmail(email,name,persons,contact) {
   
     // The user unsubscribed to the newsletter.
     mailOptions.subject = `Bye!`;
-    mailOptions.text = `Hey ${displayName || ''}!, We confirm that we have deleted your ${APP_NAME} account.`;
+    mailOptions.text = `Hey ${displayName || ''}!, We confirm that we have deleted your ${APP_NAME} account.
+    
+    Team TravelBuddy.`;
     return mailTransport.sendMail(mailOptions).then(() => {
       return console.log('Account deletion confirmation email sent to:', email);
     });
